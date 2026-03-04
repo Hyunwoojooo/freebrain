@@ -1,0 +1,15 @@
+# Goal
+string skill_name
+string reward_code
+int32 max_steps
+int32 num_envs
+---
+# Result
+bool success
+float32 final_reward
+string policy_path
+---
+# Feedback
+int32 current_step
+float32 current_reward
+float32 success_rate

@@ -1,0 +1,7 @@
+string query
+string memory_type
+int32 top_k
+---
+string[] ids
+string[] contents
+float32[] scores

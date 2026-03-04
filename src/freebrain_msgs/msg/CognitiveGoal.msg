@@ -1,0 +1,4 @@
+string goal_description
+string goal_type
+string reward_function_code
+float32 priority

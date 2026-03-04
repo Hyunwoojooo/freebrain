@@ -1,0 +1,6 @@
+string task_description
+string context
+---
+string reward_code
+string explanation
+bool is_valid

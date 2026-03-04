@@ -1,0 +1,8 @@
+string skill_name
+string[] param_keys
+string[] param_values
+---
+bool success
+string message
+string[] result_keys
+string[] result_values
