@@ -1,0 +1,161 @@
+<mujoco model="open_manipulator_x">
+  <compiler meshdir="../meshes" angle="radian" autolimits="true"/>
+
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"/>
+
+  <default>
+    <joint armature="0.01"/>
+    <default class="visual">
+      <geom contype="0" conaffinity="0" group="0"/>
+    </default>
+    <default class="collision">
+      <geom group="1" condim="4" friction="1.0 0.005 0.0001"/>
+    </default>
+  </default>
+
+  <asset>
+    <mesh name="link1" file="link1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link2" file="link2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link3" file="link3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link4" file="link4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link5" file="link5.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="gripper_left" file="gripper_left_palm.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="gripper_right" file="gripper_right_palm.stl" scale="0.001 0.001 0.001"/>
+
+    <material name="grey" rgba="0.5 0.5 0.5 1"/>
+    <material name="dark_grey" rgba="0.3 0.3 0.3 1"/>
+    <material name="red" rgba="0.8 0.0 0.0 1"/>
+    <material name="finger" rgba="0.4 0.4 0.4 1"/>
+  </asset>
+
+  <worldbody>
+    <!-- Robot base (fixed to world) -->
+    <body name="link1" pos="0 0 0">
+      <inertial pos="3.0876154e-04 0 -1.2176461e-04" mass="0.079119962"
+                fullinertia="1.2505234e-05 2.1898364e-05 1.9267361e-05 0 -1.7855208e-07 0"/>
+      <geom type="mesh" mesh="link1" material="grey" class="visual"/>
+      <geom type="cylinder" size="0.024 0.014" pos="0 0 0" class="collision"/>
+
+      <body name="link2" pos="0.012 0 0.017">
+        <joint name="joint1" type="hinge" axis="0 0 1" range="-3.14159 3.14159" damping="0.1"/>
+        <inertial pos="-3.0184870e-04 5.4043684e-04 0.047433464" mass="0.098406837"
+                  fullinertia="3.4543422e-05 3.2689329e-05 1.8850320e-05
+                               -1.6031095e-08 -3.8375155e-07 2.8511935e-08"/>
+        <geom type="mesh" mesh="link2" pos="0 0 0.019" material="grey" class="visual"/>
+        <geom type="capsule" fromto="0 0 0.005 0 0 0.055" size="0.018" class="collision"/>
+
+        <body name="link3" pos="0 0 0.0595">
+          <joint name="joint2" type="hinge" axis="0 1 0" range="-1.5 1.5" damping="0.1"/>
+          <inertial pos="1.0308393e-02 3.7743363e-04 1.0170197e-01" mass="0.13850917"
+                    fullinertia="3.3055381e-04 3.4290447e-04 6.0346498e-05
+                                 -9.7940978e-08 -3.8505711e-05 -1.5717516e-06"/>
+          <geom type="mesh" mesh="link3" material="grey" class="visual"/>
+          <geom type="capsule" fromto="0 0 0 0.024 0 0.128" size="0.016" class="collision"/>
+
+          <body name="link4" pos="0.024 0 0.128">
+            <joint name="joint3" type="hinge" axis="0 1 0" range="-1.5 1.4" damping="0.1"/>
+            <inertial pos="9.0909590e-02 3.8929816e-04 2.2413279e-04" mass="0.13274562"
+                      fullinertia="3.0654178e-05 2.4230292e-04 2.5155057e-04
+                                   -1.2764155e-06 -2.6874417e-07 1.1559550e-08"/>
+            <geom type="mesh" mesh="link4" material="grey" class="visual"/>
+            <geom type="capsule" fromto="0 0 0 0.124 0 0" size="0.013" class="collision"/>
+
+            <body name="link5" pos="0.124 0 0">
+              <joint name="joint4" type="hinge" axis="0 1 0" range="-1.7 1.97" damping="0.1"/>
+              <inertial pos="4.4206755e-02 3.6839985e-07 8.9142216e-03" mass="0.14327573"
+                        fullinertia="8.0870749e-05 7.5980465e-05 9.3127351e-05
+                                     0 -1.0157896e-06 0"/>
+              <geom type="mesh" mesh="link5" material="grey" class="visual"/>
+              <geom type="box" size="0.025 0.018 0.012" pos="0.035 0 0.005" class="collision"/>
+
+              <!-- End effector site -->
+              <site name="ee_site" pos="0.126 0 0" size="0.005" rgba="1 0 0 1"/>
+
+              <!-- Left gripper finger -->
+              <body name="gripper_left" pos="0.0817 0.021 0">
+                <joint name="gripper_left_joint" type="slide" axis="0 1 0"
+                       range="-0.01 0.019" damping="0.1"/>
+                <inertial pos="0 0 0" mass="0.001" diaginertia="1e-06 1e-06 1e-06"/>
+                <geom type="mesh" mesh="gripper_left" material="finger" class="visual"/>
+                <geom type="box" size="0.013 0.004 0.008" pos="0.013 0 0"
+                      name="gripper_left_pad" class="collision" friction="2.0 0.005 0.0001"/>
+                <site name="gripper_left_touch" pos="0.013 -0.004 0"
+                      size="0.012 0.001 0.007" type="box"/>
+              </body>
+
+              <!-- Right gripper finger -->
+              <body name="gripper_right" pos="0.0817 -0.021 0">
+                <joint name="gripper_right_joint" type="slide" axis="0 -1 0"
+                       range="-0.01 0.019" damping="0.1"/>
+                <inertial pos="0 0 0" mass="0.001" diaginertia="1e-06 1e-06 1e-06"/>
+                <geom type="mesh" mesh="gripper_right" material="finger" class="visual"/>
+                <geom type="box" size="0.013 0.004 0.008" pos="0.013 0 0"
+                      name="gripper_right_pad" class="collision" friction="2.0 0.005 0.0001"/>
+                <site name="gripper_right_touch" pos="0.013 0.004 0"
+                      size="0.012 0.001 0.007" type="box"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- Exclude adjacent body self-collisions -->
+  <contact>
+    <exclude body1="link1" body2="link2"/>
+    <exclude body1="link2" body2="link3"/>
+    <exclude body1="link3" body2="link4"/>
+    <exclude body1="link4" body2="link5"/>
+    <exclude body1="link5" body2="gripper_left"/>
+    <exclude body1="link5" body2="gripper_right"/>
+    <exclude body1="gripper_left" body2="gripper_right"/>
+  </contact>
+
+  <!-- Gripper mimic: right finger follows left -->
+  <equality>
+    <joint joint1="gripper_left_joint" joint2="gripper_right_joint"
+           polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <!-- Position actuators -->
+  <actuator>
+    <!-- Arm joints (XM430-W350: stall torque ~4.1 Nm) -->
+    <position name="joint1_pos" joint="joint1" kp="20" forcerange="-4.1 4.1"/>
+    <position name="joint2_pos" joint="joint2" kp="20" forcerange="-4.1 4.1"/>
+    <position name="joint3_pos" joint="joint3" kp="20" forcerange="-4.1 4.1"/>
+    <position name="joint4_pos" joint="joint4" kp="20" forcerange="-4.1 4.1"/>
+    <!-- Gripper (XL430-W250: stall torque ~1.5 Nm) -->
+    <position name="gripper_pos" joint="gripper_left_joint" kp="10"
+              forcerange="-1.5 1.5"/>
+  </actuator>
+
+  <!-- Sensors -->
+  <sensor>
+    <!-- Joint position -->
+    <jointpos name="joint1_pos_sens" joint="joint1"/>
+    <jointpos name="joint2_pos_sens" joint="joint2"/>
+    <jointpos name="joint3_pos_sens" joint="joint3"/>
+    <jointpos name="joint4_pos_sens" joint="joint4"/>
+    <jointpos name="gripper_pos_sens" joint="gripper_left_joint"/>
+
+    <!-- Joint velocity -->
+    <jointvel name="joint1_vel_sens" joint="joint1"/>
+    <jointvel name="joint2_vel_sens" joint="joint2"/>
+    <jointvel name="joint3_vel_sens" joint="joint3"/>
+    <jointvel name="joint4_vel_sens" joint="joint4"/>
+
+    <!-- Actuator torque (force feedback) -->
+    <actuatorfrc name="joint1_torque_sens" actuator="joint1_pos"/>
+    <actuatorfrc name="joint2_torque_sens" actuator="joint2_pos"/>
+    <actuatorfrc name="joint3_torque_sens" actuator="joint3_pos"/>
+    <actuatorfrc name="joint4_torque_sens" actuator="joint4_pos"/>
+
+    <!-- Gripper touch -->
+    <touch name="gripper_left_touch_sens" site="gripper_left_touch"/>
+    <touch name="gripper_right_touch_sens" site="gripper_right_touch"/>
+
+    <!-- End effector position in world frame -->
+    <framepos name="ee_pos_sens" objtype="site" objname="ee_site"/>
+  </sensor>
+</mujoco>
