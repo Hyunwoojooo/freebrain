@@ -8,23 +8,32 @@
              rgb1="0.85 0.85 0.85" rgb2="0.7 0.7 0.7" width="64" height="64"/>
     <material name="grid_mat" texture="grid_tex" texrepeat="10 10"/>
     <material name="table_wood" rgba="0.55 0.37 0.2 1"/>
+    <material name="plate_mat" rgba="0.75 0.75 0.75 1"/>
     <material name="blue_obj" rgba="0.2 0.6 0.8 1"/>
     <material name="green_obj" rgba="0.2 0.8 0.3 1"/>
     <material name="orange_obj" rgba="0.9 0.5 0.1 1"/>
   </asset>
 
   <worldbody>
-    <light pos="0.3 0 1.5" dir="0 0 -1" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3"/>
-    <geom name="floor" type="plane" size="1 1 0.01" material="grid_mat"/>
+    <light pos="0.15 0 1.5" dir="0 0 -1" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3"/>
 
-    <!-- Table: 0.5 x 0.6 x 0.3 m (from rl_table.sdf) -->
-    <body name="table" pos="0.3 0 0.15">
-      <geom type="box" size="0.25 0.3 0.15" material="table_wood"
+    <!-- Floor (below table, catches dropped objects) -->
+    <body name="floor_body" pos="0 0 -0.3">
+      <geom name="floor" type="plane" size="2 2 0.01" material="grid_mat"/>
+    </body>
+
+    <!-- Table: top surface at z=0 (robot base level), 0.5 x 0.6 m -->
+    <body name="table" pos="0.15 0 -0.15">
+      <geom name="table_geom" type="box" size="0.25 0.3 0.15" material="table_wood"
             condim="4" friction="1.0 0.005 0.0001"/>
     </body>
 
-    <!-- Cube: 0.04m side, 50g (from rl_table.sdf) -->
-    <body name="cube" pos="0.25 0 0.32">
+    <!-- Mounting plate (visual only) -->
+    <geom name="plate" type="box" size="0.1 0.1 0.002" pos="0 0 -0.002"
+          material="plate_mat" contype="0" conaffinity="0"/>
+
+    <!-- Cube: 0.04m side, 50g -->
+    <body name="cube" pos="0.20 0 0.02">
       <freejoint name="cube_free"/>
       <geom name="cube_geom" type="box" size="0.02 0.02 0.02"
             material="blue_obj" mass="0.05"
@@ -32,7 +41,7 @@
     </body>
 
     <!-- Cylinder: r=0.02, h=0.06, 40g -->
-    <body name="cylinder_obj" pos="0.28 0.08 0.33">
+    <body name="cylinder_obj" pos="0.22 0.06 0.03">
       <freejoint name="cylinder_free"/>
       <geom name="cylinder_geom" type="cylinder" size="0.02 0.03"
             material="green_obj" mass="0.04"
@@ -40,18 +49,18 @@
     </body>
 
     <!-- Sphere: r=0.02, 30g -->
-    <body name="sphere_obj" pos="0.28 -0.08 0.32">
+    <body name="sphere_obj" pos="0.22 -0.06 0.02">
       <freejoint name="sphere_free"/>
       <geom name="sphere_geom" type="sphere" size="0.02"
             material="orange_obj" mass="0.03"
             condim="4" friction="1.0 0.005 0.0001"/>
     </body>
 
-    <!-- Overhead camera (from rl_env: pos=0.3,0,1.0, fov=60deg) -->
-    <camera name="overhead" pos="0.3 0 1.0" fovy="60"/>
+    <!-- Overhead camera (128x128, fov=60) -->
+    <camera name="overhead" pos="0.15 0 0.8" fovy="60"/>
 
     <!-- Front-angled camera for visualization -->
-    <camera name="front" pos="0.7 0 0.5" xyaxes="0 1 0 -0.55 0 0.85"/>
+    <camera name="front" pos="0.5 -0.3 0.4" xyaxes="0.5 0.87 0 -0.25 0.14 0.96"/>
   </worldbody>
 
   <!-- Object position sensors (for RL observation) -->
